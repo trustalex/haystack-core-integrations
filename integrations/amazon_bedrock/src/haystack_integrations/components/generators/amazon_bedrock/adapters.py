@@ -493,3 +493,66 @@ class MetaLlamaAdapter(BedrockModelAdapter):
         :returns: A StreamingChunk object.
         """
         return StreamingChunk(content=chunk.get("generation", ""), meta=chunk)
+
+
+class DeepSeekR1Adapter(BedrockModelAdapter):
+    """
+    Adapter for DeepSeek's R1 models.
+
+    DeepSeek R1 is a powerful large language model available through Amazon Bedrock.
+    It offers strong capabilities for text generation, reasoning, and instruction following.
+
+    :param model_kwargs: Keyword arguments for the model. You can find the full list of parameters in the
+        Amazon Bedrock API documentation for the DeepSeek R1 model.
+        Some example parameters are:
+        - temperature: Controls randomness in generation (0.0 to 1.0)
+        - top_p: Nucleus sampling parameter (0.0 to 1.0)
+        - top_k: Limits vocabulary to k most likely tokens
+        - stop: List of sequences where generation should stop
+    :param max_length: Maximum length of generated text
+    """
+
+    def prepare_body(self, prompt: str, **inference_kwargs) -> Dict[str, Any]:
+        """
+        Prepares the body for the DeepSeek R1 model
+
+        :param prompt: The prompt to be sent to the model.
+        :param inference_kwargs: Additional keyword arguments passed to the handler.
+        :returns: A dictionary with the following keys:
+            - `input`: The prompt to be sent to the model.
+            - specified inference parameters.
+        """
+        default_params = {
+            "max_tokens": self.max_length,
+            "temperature": None,
+            "top_p": None,
+            "top_k": None,
+            "stop": None,
+            "stream": None,
+            "repetition_penalty": None,
+            "frequency_penalty": None,
+            "presence_penalty": None,
+            "seed": None,
+        }
+        params = self._get_params(inference_kwargs, default_params)
+
+        body = {"input": prompt, **params}
+        return body
+
+    def _extract_completions_from_response(self, response_body: Dict[str, Any]) -> List[str]:
+        """
+        Extracts the responses from the DeepSeek R1 model response.
+
+        :param response_body: The response body from the DeepSeek R1 model request.
+        :returns: A list of string responses.
+        """
+        return [response_body["output"]]
+
+    def _build_streaming_chunk(self, chunk: Dict[str, Any]) -> StreamingChunk:
+        """
+        Extracts the content and meta from a streaming chunk.
+
+        :param chunk: The streaming chunk as dict.
+        :returns: A StreamingChunk object.
+        """
+        return StreamingChunk(content=chunk.get("output", ""), meta=chunk)

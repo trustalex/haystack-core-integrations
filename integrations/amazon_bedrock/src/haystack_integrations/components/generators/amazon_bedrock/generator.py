@@ -22,6 +22,7 @@ from .adapters import (
     BedrockModelAdapter,
     CohereCommandAdapter,
     CohereCommandRAdapter,
+    DeepSeekR1Adapter,
     MetaLlamaAdapter,
     MistralAdapter,
 )
@@ -70,6 +71,7 @@ class AmazonBedrockGenerator:
         r"([a-z]{2}\.)?anthropic.claude.*": AnthropicClaudeAdapter,
         r"([a-z]{2}\.)?meta.llama.*": MetaLlamaAdapter,
         r"([a-z]{2}\.)?mistral.*": MistralAdapter,
+        r"([a-z0-9-]+\.)?deepseek.r1.*": DeepSeekR1Adapter,
     }
 
     SUPPORTED_MODEL_FAMILIES: ClassVar[Dict[str, Type[BedrockModelAdapter]]] = {
@@ -80,6 +82,7 @@ class AmazonBedrockGenerator:
         "anthropic.claude": AnthropicClaudeAdapter,
         "meta.llama": MetaLlamaAdapter,
         "mistral": MistralAdapter,
+        "deepseek.r1": DeepSeekR1Adapter,
     }
 
     MODEL_FAMILIES = Literal[
@@ -90,6 +93,7 @@ class AmazonBedrockGenerator:
         "anthropic.claude",
         "meta.llama",
         "mistral",
+        "deepseek.r1",
     ]
 
     def __init__(

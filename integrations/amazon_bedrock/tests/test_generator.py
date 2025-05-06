@@ -15,6 +15,7 @@ from haystack_integrations.components.generators.amazon_bedrock.adapters import 
     BedrockModelAdapter,
     CohereCommandAdapter,
     CohereCommandRAdapter,
+    DeepSeekR1Adapter,
     MetaLlamaAdapter,
     MistralAdapter,
 )
@@ -159,6 +160,9 @@ def test_constructor_with_empty_model():
         ("eu.mistral.mixtral-8x7b-instruct-v0:1", MistralAdapter),  # cross-region inference
         ("us.mistral.mistral-large-2402-v1:0", MistralAdapter),  # cross-region inference
         ("mistral.mistral-medium-v8:0", MistralAdapter),  # artificial
+        ("deepseek.r1-plus-instruct-v1.5", DeepSeekR1Adapter),
+        ("us-east-1.deepseek.r1-plus-instruct-v1.5", DeepSeekR1Adapter),
+        ("deepseek.r1-instruct-v1.5", DeepSeekR1Adapter),
     ],
 )
 def test_get_model_adapter(model: str, expected_model_adapter: Optional[Type[BedrockModelAdapter]]):
@@ -179,6 +183,7 @@ def test_get_model_adapter(model: str, expected_model_adapter: Optional[Type[Bed
         ("amazon.titan-text", AmazonTitanAdapter),
         ("meta.llama", MetaLlamaAdapter),
         ("mistral", MistralAdapter),
+        ("deepseek.r1", DeepSeekR1Adapter),
     ],
 )
 def test_get_model_adapter_with_model_family(
